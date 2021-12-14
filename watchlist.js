@@ -1,11 +1,10 @@
-//creates a set of html elements for each movie (using .map()) and displays them as innerHTML
-
 const movie = document.querySelector(".movie");
 
+//retrieves movies from localStorage and converts them to javascript objects
 let watchlistJSON = localStorage.getItem("watchlist");
 let watchlist = JSON.parse(watchlistJSON);
-console.log(watchlist);
 
+//creates HTML elements for movies added to localStorage
 const renderMovies = (movieArray) => {
   watchlist.map((currentMovie) => {
     let movieInfo = `<div>
