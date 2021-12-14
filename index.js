@@ -92,6 +92,7 @@ const movie = document.querySelector(".movie");
 
 //creates a set of html elements for each movie (using .map()) and displays them as innerHTML
 const renderMovies = (movieArray) => {
+  //console.log(data.Search);
   movieArray.map((currentMovie) => {
     let movieInfo = `<div>
             <img class="movie-poster" src="${currentMovie.Poster}" />
@@ -106,11 +107,18 @@ const renderMovies = (movieArray) => {
 //input button calls renderMovies passing the movieData array as an argument
 inputButton.addEventListener("click", function (event) {
   event.preventDefault();
-  let searchString = document.getElementById("search-bar").value;
+  let searchString = document.querySelector(".search-bar").value;
   let urlEncodedSearchString = encodeURIComponent(searchString);
-  `www.omdbapi.com/?apikey=59354c85&s=${searchString}`;
-
-  http: renderMovies(movieData);
+  getMovieData();
+  async function getMovieData() {
+    const response = await fetch(
+      `http://www.omdbapi.com/?apikey=59354c85&s=${searchString}`
+    );
+    const result = await response.json().then((data) => {
+      console.log(data.Search);
+      renderMovies(data.Search);
+    });
+  }
 });
 
 //add button (add to watchlist) event listener, obtains the IMDB id# and calls saveToWatchList() passing it as an argument
@@ -118,6 +126,7 @@ document.addEventListener("click", function (event) {
   if (event.target.classList.contains("add-button")) {
     //ensures that only the add-button element is targeted (i.e. not the element it resides within)
     movieID = event.target.getAttribute("dataimdbid");
+    console.log(movieID);
     saveToWatchList(movieID);
   }
 });
@@ -132,6 +141,7 @@ const saveToWatchList = (movieID) => {
   let movie = movieData.find((currentMovie) => {
     return currentMovie.imdbID == movieID; //why is it 'currentMovie.imdbID' and not something like 'currentMovie'?
   });
+  console.log(movie);
   let presentOnWatchlist = watchlist.some((addedMovies) => {
     return addedMovies.imdbID == movieID;
   }); // present in watchlist = true
